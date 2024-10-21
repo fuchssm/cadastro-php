@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <link rel="stylesheet" href="./php.css">
+    <title>Cadastro de novo cliente</title> <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</head>
+
+      <script>
+        function validar() 
+        {
+           
+        }
+        function formatar(mascara, documento)
+        {
+            var    i    =  documento.value.length;
+            var    saida =  mascara.substring(0,1);
+            var    texto =  mascara.substring(i)
+
+                if(texto.substring(0,1) != saida)
+                {
+                  documento.value += texto.substring(0,1);  
+                }
+        }
+
+        //Buscando CEP 
+        $(document).ready(function()
+
+        {
+                function limpa_formulario()
+                {
+                        //Limpa valores do formulario
+                        $("#endereco").val("");
+                        $("#bairro").val("");
+                        $("#cidade").val("");
+                        $("#uf").val("");
+                }
+
+                //Quando o campo CEP perde o foco
+                $("$cep").blur(function()
+                {
+                   //Nova variável "cep" somente com dígitos
+                   var cep = $ (this). val().replace(/\D/g, '');
+
+                   //Verifica se o campo cep possui valor informado
+                   if(cep != "")
+                   {
+                     //Expressão regular para validar o cep
+                     var validacep = /^[0-9] {8}$/;
+
+                     //Valida o formato do cep
+                     if(validacep.test(cep))
+
+                        {
+                          //Prenche os campos com "..." enquanto consulta webservice
+                          $("#endereco").val("...");
+                          $("#bairro").val("...");
+                          $("#cidade").val("...");
+                          $("#uf").val("...");
+
+                          //Consultando o webservice
+                          $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback", function(dados)
+                          {
+                                if(!("erro" in dados)){
+                                  //Atualiza os campos com consulta a JSON
+                                  $("#endereco").val("...");
+                                  $("#bairro").val("...");
+                                  $("#cidade").val("...");
+                                  $("#uf").val("...");
+                                }
+
+                                else{
+                                        //Cep  nao encontrado
+                                        limpa_formulario();
+                                        alert("CEP não encontrado");
+                                }
+                          });
+                     } //end id
+                        else{
+                                //Cep inválido
+                                limpa_formulario();
+                                alert("Formato de CEP inválido");
+                        }
+                   }//end if
+                   else{
+                        //Cep sem valor, limpa
+                        limpa_formulario();
+                   }
+                });
+        });
+       
+
+      </script>
+
+<body style="background-color: #d6d6d6 ;">
+
+         <h4>🅝🅞🅥🅞   🅒🅛🅘🅔🅝🅣🅔</h4>
+         <hr>
+
+         <div class="container">
+
+           <h5>Complete os campos abaixo para realizar seu cadastro.</h5>
+
+         <p></p>
+
+         <div class="row">
+            <div class="col-sm-4">
+                
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control"  placeholder="Nome completo">
+                    <label for="floatingInput"><font color="red">*</font> Nome completo</label>
+                </div>
+            </div>
+
+
+            <div class="col-sm-4">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control"  placeholder="CPF" maxlength="14" oninput="this.value = this.value.replace(/[^0-9.\-]/g, '')" onkeypress="formatar('###.###.###-##', this)" required>
+                    <label for="floatingInput"><font color="red">*</font>Nascimento</label>
+                </div>
+            </div>
+
+
+            <div class="col-sm-4">
+                <div class="form-floating mb-3">
+                    <input type="cpf" class="form-control"  placeholder="CPF" maxlength="14" oninput="this.value = this.value.replace(/[^0-9.\-]/g, '')" onkeypress="formatar('###.###.###-##', this)" required>
+                    <label for="floatingInput"><font color="red">*</font> CPF</label>
+                </div>
+            </div>
+
+
+                <div class="col-sm-3">
+                    <div class="form-floating mb-3">
+                        <input type="cep" name="cep" id="cep" class="form-control" placeholder="CEP" maxlength="10" oninput="this.value = this.value.replace(/[^0-9.\-]/g, '')" onkeypress="formatar('###.###-##', this)" required>
+                        <label for="floatingInput"><font color="red">*</font> CEP</label> 
+                    </div>
+                </div>
+
+
+                <div class="col-sm-8">
+                    <div class="form-floating mb-3">
+                        <input type="endereco" class="form-control"  placeholder="Endereco">
+                        <label for="floatingInput"><font color="red">*</font> Endereço</label>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-1">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control"  placeholder="Numero">
+                        <label for="floatingInput"><font color="red">*</font> Número</label>
+                    </div>
+                </div>
+
+
+                    <div class="col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="complemento" class="form-control"  placeholder="Complemento">
+                            <label for="floatingInput">Complemento</label>
+                    </div>
+                </div>
+
+
+              <div class="col-sm-4">
+                    <div class="form-floating mb-3">
+                        <input type="Bairro" class="form-control"  placeholder="Bairro">
+                        <label for="floatingInput"><font color="red">*</font> Bairro</label>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-8">
+                        <div class="form-floating mb-3">
+                            <input type="cidade" class="form-control"  placeholder="Cidade">
+                            <label for="floatingInput"><font color="red">*</font> Cidade</label>
+                        </div>
+                </div>
+
+
+                    <div class="col-sm-4">
+                        <div class="form-floating mb-3">
+                                <select name="uf" class="form-control">
+                            <option>Estado</option>
+                                <option value="">Selecione</option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espirito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                        </select>
+                            <label for="floatingInput"><font color="red">*</font> UF</label>
+                    </div>
+            </div>
+        <hr>
+
+         <div class="row">
+
+                  
+                    <div class="col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="Email" class="form-control"  placeholder="Email">
+                            <label for="floatingInput">Email</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="Telefone" class="form-control"  placeholder="telefone">
+                            <label for="floatingInput"><font color="red">*</font> Telefone</label>
+                        </div>
+                    </div>
+
+                <hr>
+
+                    <div class="col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control"  placeholder="Senha">
+                            <label for="floatingInput"><font color="red">*</font> Senha</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="Password" class="form-control"  placeholder="Confirma senha">
+                            <label for="floatingInput"><font color="red">*</font> Confirma senha</label>
+                        </div>
+                    </div>
+
+                    <button class="btn-concluir">Concluir</button>
+
+         </div>
+</body>
+</html>
